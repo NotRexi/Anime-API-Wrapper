@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from .models import Anime, Episode, Download
 from .decrypter import decrypt
 
-BASE_URL = "https://animepahe.ru" # You can change this to animepahe.com if .ru stops working
+BASE_URL = "https://animepahe.si" # You can change this to animepahe.com if .ru stops working
 _session = None
 
 def set_cookie_file(path):
@@ -234,3 +234,4 @@ def get_anime_info(session_id):
         "description": desc.text.strip() if desc else "",
         "image": img_url
     }
+
