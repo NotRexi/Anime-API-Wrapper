@@ -3,7 +3,7 @@
 
   
 
-A powerful Python library for searching, retrieving, and downloading anime episodes directly from [AnimePahe](https://animepahe.ru), including support for episode metadata, sub/dub audio, multiple resolutions, and bypassing download protection.
+A powerful Python library for searching, retrieving, and downloading anime episodes directly from [AnimePahe](https://animepahe.si), including support for episode metadata, sub/dub audio, multiple resolutions, and bypassing download protection.
 
   
 
@@ -11,23 +11,15 @@ A powerful Python library for searching, retrieving, and downloading anime episo
 
   
 
-- 🔍 Search for anime by name
-
-- 📺 Fetch all episodes and metadata
-
-- 🧭 Detect and traverse prequels/sequels (season chaining)
-
-- 🎧 Support for subbed & dubbed audio
-
-- 📥 Get direct download links (1080p, 720p, etc.)
-
-- 🖼️ Download poster/snapshot images
-
-- 🍪 Cookie support to bypass bot protection
-
-- ✅ Fully asynchronous-safe and requests-based
-
-- 📦 Lightweight, zero external API dependencies
+- 🔍 Search for anime by name  
+- 📺 Fetch all episodes and metadata  
+- 🧭 Detect and traverse prequels/sequels (season chaining)  
+- 🎧 Support for subbed & dubbed audio  
+- 📥 Get direct download links (1080p, 720p, etc.)  
+- 🖼️ Download poster/snapshot images  
+- 🍪 Cookie injection via browser automation  
+- ✅ Requests-based with retry handling  
+- 📦 Lightweight, no external API dependencies  
 
   
 
@@ -39,9 +31,9 @@ A powerful Python library for searching, retrieving, and downloading anime episo
 
   
 
-- Python 3.8+
-
-- Browser (for cookies export)
+- Python 3.8+  
+- Google Chrome + ChromeDriver (for Selenium cookies)  
+- `requests`, `beautifulsoup4`, `selenium`, `lxml`  
 
 - [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) (or any browser cookie export tool)
 
@@ -53,34 +45,14 @@ A powerful Python library for searching, retrieving, and downloading anime episo
 
 ## ⚙️ Installation
 
-1.  **Download the ZIP package** you received and extract it anywhere on your computer.
+1.  **Clone or extract** this project.
     
-2.  **Install required dependencies** (only `requests`, `beautifulsoup4` and optionally `lxml` for faster parsing): 
+2.  **Install required dependencies** (see above): 
 ```bash
 pip install requests beautifulsoup4 lxml` 
 ```
-    
+3. Run ```docs/``` examples to test
 
-4.  **Export your cookies from AnimePahe**:
-    
-    -   Visit [https://animepahe.ru](https://animepahe.ru) in your browser.
-        
-    -   Use a browser extension like EditThisCookie or similar.
-        
-    -   Export your cookies as a **Netscape format `.txt` file**.
-        
-    -   Save it somewhere on your computer (e.g., `C:/Users/YourName/Project/cookies.txt`).
-        
-5.  **Edit the demo file** (e.g., `demo.py`) and set your cookie path:
-```python
-cookie_path = "C:/Users/YourName/cookies.txt"
-```
-
-6.  **Run the script**:
-    
-```bash
-python client.py
-```
 
 
   
@@ -91,28 +63,15 @@ python client.py
 
 ## 🧠 Cookie Setup (IMPORTANT)
 
-  
 
-This library **requires your own cookies** from visiting AnimePahe in your browser, to bypass cloudflare or ddos protection.
-
-  
-
-1. Go to [https://animepahe.ru](https://animepahe.ru) in your browser.
-
-2. Use  a extension like [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) to export the cookies
-
-3. Export as **Netscape HTTP Cookie File** (`cookies.txt`)
-
-4. Place the file anywhere, and **set the path manually** in your code:
-
+This wrapper uses Selenium to grab fresh cookies from AnimePahe.
+Run once at the start of your script:
   
 
 ```python
+from animepahe import set_browser_cookies
 
-from animepahe import set_cookie_file
-
-set_cookie_file("C:/Users/youruser/Downloads/cookies.txt")
-
+set_browser_cookies()
 ```
 
   
@@ -121,142 +80,116 @@ set_cookie_file("C:/Users/youruser/Downloads/cookies.txt")
 
   
 
-## 🚀 Usage Example
-
-  
-
-```python
-
-from animepahe import  (
-
-search_anime, get_first_episode,
-
-getDownloadOptions, getDownloadLink,
-
-set_cookie_file
-
-)
-
-  
-
-# Set cookie file path
-
-set_cookie_file("C:/Users/youruser/Downloads/cookies.txt")
-
-  
-
-# Search
-
-results =  search_anime("bleach")
-
-anime = results[0]
-
-  
-
-# Get first episode info
-
-ep1 =  get_first_episode(anime.session)
-
-  
-
-# Show download options
-
-options =  getDownloadOptions(ep1.url)
-
-for opt in options:
-
-print(f"{opt.res} - {opt.fileSize} - {'Dub'  if opt.is_dubbed else  'Sub'}")
-
-print("Final URL:",  getDownloadLink(opt.url))
-
-```
-
-  
-
----
-
-  
 
 ## 📘 Full API Docs
 
   
 
-### `set_cookie_file(path)`
+### `set_browser_cookies()`
 
-Sets the cookies from a `.txt` Netscape format file.
+Launches a headless browser, waits for JS cookies, and applies them to the requests session.\
+**Returns:** `None`
+  
+
+### `search_anime(query: str) → List[Anime]`
+
+Search AnimePahe by name.\
+**Returns:** List of `Anime` objects with `id`, `title`, `type`, `status`, `poster`, `session`.
+  
+
+### `get_first_episode(session_id: str) → Episode`
+
+Fetch metadata for the first episode of a series.\
+**Returns:** `Episode` object
+  
+
+### `get_episodes(session_id: str) → List[Episode]`
+
+Fetch all episodes for a series.\
+**Returns:** List of `Episode` objects (`id`, `number`, `snapshot`, `duration`, `url`).
 
   
 
-### `search_anime(query) → List[Anime]`
+### `getDownloadOptions(episode_url: str) → List[Download]`
 
-Searches AnimePahe and returns matching anime.
+Parse all available download entries.\
+**Returns:** List of `Download` objects with:
 
-  
+- `url` → intermediary link
 
-### `get_first_episode(session_id) → Episode`
+- `res` → resolution (`1080p`, `720p`, etc.)
 
-Fetches metadata for the very first episode of the anime.
+- `fileSize` → file size (MB)
 
-  
-
-### `get_episodes(session_id) → List[dict]`
-
-Returns all available episodes with info: number, audio, snapshot, duration.
+- `is_dubbed` → `True` (dub) / `False` (sub)
 
   
 
-### `getDownloadOptions(episode_url) → List[Download]`
+### `getDownloadLink(intermediary_url: str) → str`
 
-Returns all available download links (resolution, size, dub/sub, etc).
-
-  
-
-### `getDownloadLink(intermediary_url) → str`
-
-Returns final direct download link (MP4) from the episode's available download links
+Bypass protection to fetch the final direct MP4 link.\
+**Returns:** Direct download URL (string).
 
   
 
-### `get_anime_info(session_id) → dict`
+### `get_anime_info(session_id: str) → dict`
 
-Gets title, description, and cover image of an anime series.
-
-  
-
-### `fetch_seasons_chain(session_id) → List[dict]`
-
-Traverses prequels/sequels and returns full anime season chain.
+Get metadata for a series.\
+**Returns:** Dict `{id, title, description, image}`.
 
   
 
-### `get_airing(page=1) → List[dict]`
+### `fetch_seasons_chain(session_id: str) → List[dict]`
 
-Lists currently airing anime series.
-
+Traverse prequel/sequel chain and return all connected anime.\
+**Returns:** List of dicts with anime metadata.
   
 
-### `fetch_image_bytes(url) → bytes`
+### `get_airing(page: int = 1) → List[dict]`
 
-Downloads raw image bytes from AnimePahe.
+Lists currently airing anime series. (not the best)\
+**Returns:** List of dicts `{id, title, image}`.
+  
+
+### `fetch_image_bytes(url: str) → bytes`
+
+Download raw image bytes from AnimePahe.\
+**Returns:** `bytes`
+
+### `filter_downloads(downloads, quality=None, sub_only=False, dub_only=False, qualities=None) → List[Download]`
+
+Filter downloads by resolution and/or sub/dub.
+
+- `quality:`  `"720p"` (single)
+
+- `qualities:` `["720p","1080p"]` (multiple)
+
+- `sub_only:` `keep only subbed`
+
+- `dub_only:` `keep only dubbed`\
+**Returns:** Filtered list of `Download`.
 
 ---
 ## ❓ FAQ
 
   
 
-**Q: Will this work forever?**
+### **Q: Will this work forever?**
 
 A: This depends on AnimePahe's site structure. If they make major changes, small fixes might be needed — but it's built to be stable. If the animepahe.ru website goes down, you can use their alternate website animepahe.com. 
 
+
+### **Q: Do I need cookies every time?**
+
+A: Yes, but the Selenium session makes it easy—just call `set_browser_cookies()`.
+
+### **Q: Does this break TOS?**
+
+A: You are responsible for how you use this. This wrapper is intended for educational and research purposes only.
+
   
 
-**Q: Does this break TOS?**
-
-A: You are responsible for how you use this. This tool mimics a real browser visit using your own cookies.
-
-  
-
-**Q: Can I embed this in my anime site?**
+### **Q: Can I embed this in my anime site?**
 
 A: Absolutely. This can be used as a backend library or CLI tool.
 
@@ -274,11 +207,11 @@ This project is **paid**, and distributed under a license that prohibits free re
 
   
 
-- Use it in your commercial or private projects
+- ✅ Personal + commercial use allowed
 
-- Modify it for personal use
+- 🔒 Redistribution of source not allowed
 
-- NOT resell or share the source without permission
+- ⚠️ You are responsible for usage
 
   
 
@@ -292,7 +225,8 @@ This project is **paid**, and distributed under a license that prohibits free re
 
 For help or other inquiries:
 
-💬 Discord: `rex.i`
+💬 Discord: `rex.i`\
+💬 Github: `NotRexi`
 
   
 
@@ -316,7 +250,12 @@ For help or other inquiries:
 
 - Cookie injection
 
-  
+**v1.0.1** - QOL Update + fixes
+
+- Automatic Cookie injection
+- Episode Filtering
+- Docs folder added
+- Removed redundant functions
 
 ---
 
