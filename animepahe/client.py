@@ -10,7 +10,6 @@ from .decrypter import decrypt
 from .models import Anime, Episode, Download
 
 BASE_URL = "https://animepahe.si"
-IMAGE_PROXY = "/image-proxy/"
 
 _session = None
 
@@ -67,13 +66,6 @@ def set_browser_cookies():
 
     driver.quit()
     print("Requests session ready with browser cookies!")
-
-
-def proxy_image_url(url: str) -> str:
-    if url and url.startswith("https://i.animepahe"):
-        return IMAGE_PROXY + url.split("/")[-1]
-    return url
-
 
 def fetch_image_bytes(image_url: str) -> bytes:
     headers = {
@@ -300,4 +292,5 @@ def filter_downloads(downloads, quality=None, sub_only=False, dub_only=False, qu
         result.append(d)
 
     return result
+
 
