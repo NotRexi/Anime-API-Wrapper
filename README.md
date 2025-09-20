@@ -49,7 +49,7 @@ A powerful Python library for searching, retrieving, and downloading anime episo
     
 2.  **Install required dependencies** (see above): 
 ```bash
-pip install requests beautifulsoup4 lxml` 
+pip install requests beautifulsoup4 selenium lxml
 ```
 3. Run ```docs/``` examples to test
 
