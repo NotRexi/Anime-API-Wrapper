@@ -3,8 +3,9 @@
 
   
 
-A powerful Python library for searching, retrieving, and downloading anime episodes directly from [AnimePahe](https://animepahe.si), including support for episode metadata, sub/dub audio, multiple resolutions, and bypassing download protection.
-
+A powerful Python library for searching, retrieving, and downloading anime episodes directly from [AnimePahe](https://animepahe.si), including support for episode metadata, sub/dub audio, multiple resolutions, and bypassing download protection.\
+\
+⭐ **Feel free to star this project if you use it!** ⭐
   
 
 ## 🔥 Features
