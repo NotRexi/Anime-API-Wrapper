@@ -203,13 +203,13 @@ A: Absolutely. This can be used as a backend library or CLI tool.
 
   
 
-This project is **paid**, and distributed under a license that prohibits free redistribution. You may:
+~~This project is **paid**, and distributed under a license that prohibits free redistribution~~. You may:
 
   
 
 - ✅ Personal + commercial use allowed
 
-- 🔒 Redistribution of source not allowed
+- ~~🔒 Redistribution of source not allowed~~
 
 - ⚠️ You are responsible for usage
 
